@@ -125,16 +125,17 @@ help_menu = """
 
 [+]usage: 
 
-./pass_generator.py -l 12 -o file.txt -b
-./pass_generator.py -n Username -u http://localhost/ -o file.txt -b
+./pass_generator.py -l 25 -s --ld --md5 --base64
 
 [+]result:
 
-Your password is:
-
-euisfh&T#f9(Wf,0gvfiudh
-
-Good luck!
+Program finished successful, result:                                                                                                                                                                                                       
+                                                                                                                                                                                                                                           
+Password: odmuectYpbEncBP3473548261                                                                                                                                                                                                        
+In Base64: b2RtdWVjdFlwYkVuY0JQMzQ3MzU0ODI2MQ==                                                                                                                                                                                            
+In MD5: 5873b555538590633e69652f728268f6                                                                                                                                                                                                   
+                                                                                                                                                                                                                                           
+Good luck! 
 """
 
 
