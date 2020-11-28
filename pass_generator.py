@@ -4,9 +4,10 @@
 # Author: OzoNeTT
 # Github: https://github.com/OzoNeTT/SimplePasswordGenerator/
 
+import base64
+import hashlib
+import random
 import string as chars
-import random, re
-import base64, hashlib
 from optparse import OptionParser
 
 LETTERS = chars.ascii_letters
@@ -29,6 +30,7 @@ def create_shuffle(digits, letters, symbols, upper, lower):
 
 def create_shuffle_ld(digits, letters, symbols, upper, lower):
     string_letters = ''
+
     if letters:
         string_letters = LETTERS if not upper and not lower else LETTERS.lower()\
                          if lower else LETTERS.upper() if upper else ''
@@ -42,6 +44,7 @@ def password_generator(length=16, digits=True, letters=True, symbols=True, upper
     random_password = ''
     if ld:
         printable_letters, printable_else = create_shuffle_ld(digits, letters, symbols, upper, lower)
+
         if uniq:
             printable_letters = ''.join(c for c in printable_letters if c not in BANNED)
             printable_else = ''.join(c for c in printable_else if c not in BANNED)
@@ -60,6 +63,7 @@ def password_generator(length=16, digits=True, letters=True, symbols=True, upper
         random_password = ''.join(random_password_part_one) + ''.join(random_password_part_two)
     else:
         printable = create_shuffle(digits, letters, symbols, upper, lower)
+
         if uniq:
             printable = ''.join(c for c in printable if c not in BANNED)
 
@@ -158,9 +162,7 @@ def main_core():
     parse.add_option("-c", dest="C", action='store_false', help="Do not use letters")
     parse.add_option("-d", dest="D", action='store_false', help="Do not use digits")
     parse.add_option("-A", dest="A", action='store_true', help="The first letter of the password is capitalized")
-
     parse.add_option("-U", dest="Similar", action='store_true', help="Exclude Similar Characters (i, I, l, 1, o, O, 0")
-
     parse.add_option("--uc", dest="Upper", action='store_false', help="Use only upper case letters")
     parse.add_option("--lc", dest="Lower", action='store_false', help="Use only lower case letters")
     parse.add_option("--ld", dest="LD", action='store_false', help="Letters first")
