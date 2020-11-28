@@ -149,15 +149,15 @@ def main_core():
                      help="Specify the username (optional for file output)")
     parse.add_option("-o", "--out", dest="File", type="string",
                      help="Output file. If it exists it will be overwrited!")
-    parse.add_option("--base64", dest="BASE64", action='store_true', help="Encrypt your password with base64")
-    parse.add_option("--md5", dest="MD5", action='store_true', help="Encrypt your password with MD5")
     parse.add_option("-s", dest="S", action='store_false', help="Do not use punctuation symbols")
     parse.add_option("-c", dest="C", action='store_false', help="Do not use letters")
     parse.add_option("-d", dest="D", action='store_false', help="Do not use digits")
+    parse.add_option("-A", dest="A", action='store_true', help="The first letter of the password is capitalized")
     parse.add_option("--uc", dest="Upper", action='store_false', help="Use only upper case letters")
     parse.add_option("--lc", dest="Lower", action='store_false', help="Use only lower case letters")
     parse.add_option("--ld", dest="LD", action='store_false', help="Letters first")
-
+    parse.add_option("--base64", dest="BASE64", action='store_true', help="Encrypt your password with base64")
+    parse.add_option("--md5", dest="MD5", action='store_true', help="Encrypt your password with MD5")
     (opt, args) = parse.parse_args()
 
     if opt.Length is None and opt.URL is None and opt.Username is None and opt.File is None and opt.Upper is None \
@@ -174,6 +174,7 @@ def main_core():
     except Exception:
         print(f'{bcolors.HEADER}{art}{bcolors.ENDC}Error error, as always! Type  -h  for help\n\n')
         exit(0)
+
     PUNCTUATION_SYMBOLS = True if opt.S is None else False
     DIGITS = True if opt.D is None else False
     LETTER_CHARS = True if opt.C is None else False
@@ -194,9 +195,14 @@ def main_core():
     string = password_generator(length=LENGTH, digits=DIGITS, letters=LETTER_CHARS, symbols=PUNCTUATION_SYMBOLS,
                                 upper=UPPER_FLAG, lower=LOWER_FLAG, ld=LETTERS_FIRST)
 
+    # Capitalize
+    if opt.A:
+        string = string.capitalize()
+
     # Encryption
     b64_string = ''
     md5_string = ''
+
     if opt.BASE64:
         b64_string = base64.b64encode(string.encode()).decode()
 

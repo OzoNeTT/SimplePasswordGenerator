@@ -31,6 +31,8 @@ need! At the moment, the program can:
 
 - Use only lower or upper case characters
 
+- Make the first letter of the password capitalized
+
 - Generate a password with letters at the beginning
 
 - Write creds to file like:
