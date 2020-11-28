@@ -130,9 +130,12 @@ def main_core():
     parse = OptionParser(bcolors.HEADER + art + help_menu + bcolors.ENDC)
 
     parse.add_option("-l", "--len", dest="Length", type="string", help="Specify password length")
-    parse.add_option("-u", "--url", dest="URL", type="string", help="Set the website URL (optional for file output)")
-    parse.add_option("-n", "--name", dest="Username", type="string", help="Specify the username (optional for file output)")
-    parse.add_option("-o", "--out", dest="File", type="string", help="Output file. If it exists it will be overwrited!")
+    parse.add_option("-u", "--url", dest="URL", type="string",
+                     help="Set the website URL (optional for file output)")
+    parse.add_option("-n", "--name", dest="Username", type="string",
+                     help="Specify the username (optional for file output)")
+    parse.add_option("-o", "--out", dest="File", type="string",
+                     help="Output file. If it exists it will be overwrited!")
     parse.add_option("-b", "--base64", dest="B", action='store_false', help="Convert everything to base64")
     parse.add_option("-s", dest="S", action='store_false', help="Do not use punctuation symbols")
     parse.add_option("-c", dest="C", action='store_false', help="Do not use letters")
@@ -147,7 +150,8 @@ def main_core():
             and opt.B is None and opt.S is None and opt.C is None and opt.D is None \
             and opt.Lower is None and opt.LD is None:
         password = password_generator()
-        print(f'{bcolors.HEADER}{art}Your password is:\n\n{bcolors.PASS}{password}\n\n{bcolors.TEXT}Good luck!')
+        print(f'{bcolors.HEADER}{art}{bcolors.TEXT}Your password is:\n\n{bcolors.PASS}{password}\n\n'
+              f'{bcolors.TEXT}Good luck!')
         exit(0)
 
     string = ''
