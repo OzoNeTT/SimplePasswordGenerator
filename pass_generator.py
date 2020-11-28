@@ -152,6 +152,7 @@ def main_core():
         exit(0)
 
     string = ''
+    LENGTH = 16
     try:
         LENGTH = int(opt.Length) if opt.Length is not None else 16
     except Exception:
@@ -174,7 +175,6 @@ def main_core():
         print(f'{bcolors.TEXT}{art}ERROR 418, i am not a teapot!\n\n')
         exit(0)
 
-    print(LETTERS_FIRST)
     string = password_generator(length=LENGTH, digits=DIGITS, letters=LETTER_CHARS, symbols=PUNCTUATION_SYMBOLS,
                                 upper=UPPER_FLAG, lower=LOWER_FLAG, ld=LETTERS_FIRST)
 
