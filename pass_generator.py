@@ -162,7 +162,7 @@ def main_core():
 
     if opt.Length is None and opt.URL is None and opt.Username is None and opt.File is None and opt.Upper is None \
             and opt.BASE64 is None and opt.S is None and opt.C is None and opt.D is None \
-            and opt.Lower is None and opt.LD is None and opt.MD5 is None:
+            and opt.Lower is None and opt.LD is None and opt.MD5 is None and opt.A is None:
         password = password_generator()
         print(printer(password))
         exit(0)
