@@ -9,6 +9,7 @@ import random
 import base64
 from optparse import OptionParser
 
+
 LETTERS = chars.ascii_letters
 NUMBERS = chars.digits
 PUNCTUATION = chars.punctuation
@@ -135,10 +136,10 @@ def main_core():
     parse.add_option("-u", dest="U", type="string", help="Set the website URL (optional for file output)")
     parse.add_option("-n", dest="N", type="string", help="Specify the username (optional for file output)")
     parse.add_option("-o", dest="O", type="string", help="Output file. If it exists it will be overwrited!")
-    parse.add_option("-b", dest="B", type="string", help="Convert everything to base64")
-    parse.add_option("-s", dest="S", type="string", help="Do not use punctuation symbols")
-    parse.add_option("-c", dest="C", type="string", help="Do not use letters")
-    parse.add_option("-d", dest="D", type="string", help="Do not use digits")
+    parse.add_option("-b", dest="B", action='store_false', help="Convert everything to base64")
+    parse.add_option("-s", dest="S", action='store_true', help="Do not use punctuation symbols")
+    parse.add_option("-c", dest="C", action='store_true', help="Do not use letters")
+    parse.add_option("-d", dest="D", action='store_true', help="Do not use digits")
 
     (opt, args) = parse.parse_args()
 
@@ -149,10 +150,10 @@ def main_core():
         exit(0)
 
     string = ''
-    LENGTH = int(opt.L) if opt.L is not None else 8
-    PUNSYMBOLS = True if opt.S is None else False
-    DIGITS = True if opt.D is None else False
-    LETT = True if opt.C is None else False
+    LENGTH = int(opt.L) if opt.L is not None else 16
+    PUNSYMBOLS = not opt.S
+    DIGITS = not opt.D
+    LETT = not opt.C
 
     if not PUNSYMBOLS and not DIGITS and not LETT:
         print(f'{bcolors.TEXT}{art}Sorry, you disabled everything, here is you password:\n\n'
@@ -161,7 +162,7 @@ def main_core():
 
     string = password_generator(length=LENGTH, digits=DIGITS, letters=LETT, symbols=PUNSYMBOLS)
 
-    if opt.B is not None:
+    if opt.B:
         string = base64.b32encode(string)
 
     # if file will be written into file
