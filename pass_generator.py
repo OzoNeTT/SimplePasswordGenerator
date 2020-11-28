@@ -123,18 +123,17 @@ Your password is:
 euisfh&T#f9(Wf,0gvfiudh
 
 Good luck!
-
 """
 
 
 def main_core():
     parse = OptionParser(bcolors.HEADER + art + help_menu + bcolors.ENDC)
 
-    parse.add_option("-l", dest="Length", type="string", help="Specify password length")
-    parse.add_option("-u", dest="URL", type="string", help="Set the website URL (optional for file output)")
-    parse.add_option("-n", dest="Username", type="string", help="Specify the username (optional for file output)")
-    parse.add_option("-o", dest="File", type="string", help="Output file. If it exists it will be overwrited!")
-    parse.add_option("-b", dest="B", action='store_false', help="Convert everything to base64")
+    parse.add_option("-l", "--len", dest="Length", type="string", help="Specify password length")
+    parse.add_option("-u", "--url", dest="URL", type="string", help="Set the website URL (optional for file output)")
+    parse.add_option("-n", "--name", dest="Username", type="string", help="Specify the username (optional for file output)")
+    parse.add_option("-o", "--out", dest="File", type="string", help="Output file. If it exists it will be overwrited!")
+    parse.add_option("-b", "--base64", dest="B", action='store_false', help="Convert everything to base64")
     parse.add_option("-s", dest="S", action='store_false', help="Do not use punctuation symbols")
     parse.add_option("-c", dest="C", action='store_false', help="Do not use letters")
     parse.add_option("-d", dest="D", action='store_false', help="Do not use digits")
