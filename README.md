@@ -1,6 +1,28 @@
 # Simple Password Generator
 
-Hello this is python **script** to generate what ever **password** you
+```shell script
+                /|  /|  ---------------------------
+                ||__||  |                         |
+               /   O O\__     Simple password     |
+              /          \       generator        |
+             /      \     \                       |
+            /   _    \     \ ----------------------
+           /    |\____\     \      ||
+          /     | | | |\____/      ||
+         /       \| | | |/ |     __||
+        /  /  \   -------  |_____| ||
+       /   |   |           |       --|
+       |   |   |           |_____  --|
+       |  |_|_|_|          |     \----
+       /\                  |
+      / /\        |        /
+     / /  |       |       |
+ ___/ /   |       |       |
+|____/    c_c_c_C/ \C_c_c_c
+
+```
+
+SimplePasswordGenerator is a simple python **script** to generate what ever **password** you
 need! At the moment, the program can:
 
 - Generate separately password with digits, letters and punctuation characters
