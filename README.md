@@ -35,6 +35,8 @@ need! At the moment, the program can:
 
 - Generate a password with letters at the beginning
 
+- Generate a password without similar letters
+
 - Write creds to file like:
 
 ```

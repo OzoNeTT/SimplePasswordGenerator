@@ -5,13 +5,14 @@
 # Github: https://github.com/OzoNeTT/SimplePasswordGenerator/
 
 import string as chars
-import random
+import random, re
 import base64, hashlib
 from optparse import OptionParser
 
 LETTERS = chars.ascii_letters
 NUMBERS = chars.digits
 PUNCTUATION = chars.punctuation
+BANNED = '6bc(gq9CGLIil1|Oo0Ss5VUZ2zvu'
 
 
 def create_shuffle(digits, letters, symbols, upper, lower):
@@ -37,10 +38,14 @@ def create_shuffle_ld(digits, letters, symbols, upper, lower):
     return string_letters, string_else
 
 
-def password_generator(length=16, digits=True, letters=True, symbols=True, upper=False, lower=False, ld=False):
+def password_generator(length=16, digits=True, letters=True, symbols=True, upper=False, lower=False, ld=False, uniq=False):
     random_password = ''
     if ld:
         printable_letters, printable_else = create_shuffle_ld(digits, letters, symbols, upper, lower)
+        if uniq:
+            printable_letters = ''.join(c for c in printable_letters if c not in BANNED)
+            printable_else = ''.join(c for c in printable_else if c not in BANNED)
+
         printable_letters = list(printable_letters)
         printable_else = list(printable_else)
 
@@ -55,12 +60,12 @@ def password_generator(length=16, digits=True, letters=True, symbols=True, upper
         random_password = ''.join(random_password_part_one) + ''.join(random_password_part_two)
     else:
         printable = create_shuffle(digits, letters, symbols, upper, lower)
+        if uniq:
+            printable = ''.join(c for c in printable if c not in BANNED)
 
         printable = list(printable)
         random.shuffle(printable)
-
         random_password = random.choices(printable, k=length)
-
         random_password = ''.join(random_password)
     return random_password
 
@@ -153,6 +158,9 @@ def main_core():
     parse.add_option("-c", dest="C", action='store_false', help="Do not use letters")
     parse.add_option("-d", dest="D", action='store_false', help="Do not use digits")
     parse.add_option("-A", dest="A", action='store_true', help="The first letter of the password is capitalized")
+
+    parse.add_option("-U", dest="Similar", action='store_true', help="Exclude Similar Characters (i, I, l, 1, o, O, 0")
+
     parse.add_option("--uc", dest="Upper", action='store_false', help="Use only upper case letters")
     parse.add_option("--lc", dest="Lower", action='store_false', help="Use only lower case letters")
     parse.add_option("--ld", dest="LD", action='store_false', help="Letters first")
@@ -161,7 +169,7 @@ def main_core():
     (opt, args) = parse.parse_args()
 
     if opt.Length is None and opt.URL is None and opt.Username is None and opt.File is None and opt.Upper is None \
-            and opt.BASE64 is None and opt.S is None and opt.C is None and opt.D is None \
+            and opt.BASE64 is None and opt.S is None and opt.C is None and opt.D is None and opt.Similar is None\
             and opt.Lower is None and opt.LD is None and opt.MD5 is None and opt.A is None:
         password = password_generator()
         print(printer(password))
@@ -187,13 +195,14 @@ def main_core():
     UPPER_FLAG = False if opt.Upper is None else True
     LOWER_FLAG = False if opt.Lower is None else True
     LETTERS_FIRST = False if opt.LD is None else True
+    UNIQ_CHARS = True if opt.Similar is not None else False
 
     if UPPER_FLAG and LOWER_FLAG:
         print(f'{bcolors.HEADER}{art}{bcolors.ENDC}ERROR 418, i am not a teapot!\n\n')
         exit(0)
 
     string = password_generator(length=LENGTH, digits=DIGITS, letters=LETTER_CHARS, symbols=PUNCTUATION_SYMBOLS,
-                                upper=UPPER_FLAG, lower=LOWER_FLAG, ld=LETTERS_FIRST)
+                                upper=UPPER_FLAG, lower=LOWER_FLAG, ld=LETTERS_FIRST, uniq=UNIQ_CHARS)
 
     # Capitalize
     if opt.A:
