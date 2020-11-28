@@ -148,7 +148,7 @@ def main_core():
             and opt.B is None and opt.S is None and opt.C is None and opt.D is None \
             and opt.Lower is None and opt.LD is None:
         password = password_generator()
-        print(f'{bcolors.TEXT}{art}Your password is:\n\n{bcolors.PASS}{password}\n\n{bcolors.TEXT}Good luck!')
+        print(f'{bcolors.HEADER}{art}Your password is:\n\n{bcolors.PASS}{password}\n\n{bcolors.TEXT}Good luck!')
         exit(0)
 
     string = ''
@@ -156,14 +156,14 @@ def main_core():
     try:
         LENGTH = int(opt.Length) if opt.Length is not None else 16
     except Exception:
-        print(f'{bcolors.TEXT}{art}{bcolors.ENDC}Error error, as always! Type  -h  for help')
+        print(f'{bcolors.HEADER}{art}{bcolors.ENDC}Error error, as always! Type  -h  for help\n\n')
         exit(0)
     PUNCTUATION_SYMBOLS = True if opt.S is None else False
     DIGITS = True if opt.D is None else False
     LETTER_CHARS = True if opt.C is None else False
 
     if not PUNCTUATION_SYMBOLS and not DIGITS and not LETTER_CHARS:
-        print(f'{bcolors.TEXT}{art}Sorry, you disabled everything, here is you password:\n\n'
+        print(f'{bcolors.HEADER}{art}Sorry, you disabled everything, here is you password:\n\n'
               f'{bcolors.PASS}DuNkEy!\n\n{bcolors.TEXT}Good luck!')
         exit(0)
 
@@ -172,7 +172,7 @@ def main_core():
     LETTERS_FIRST = False if opt.LD is None else True
 
     if UPPER_FLAG and LOWER_FLAG:
-        print(f'{bcolors.TEXT}{art}ERROR 418, i am not a teapot!\n\n')
+        print(f'{bcolors.HEADER}{art}{bcolors.ENDC}ERROR 418, i am not a teapot!\n\n')
         exit(0)
 
     string = password_generator(length=LENGTH, digits=DIGITS, letters=LETTER_CHARS, symbols=PUNCTUATION_SYMBOLS,
@@ -189,7 +189,7 @@ def main_core():
         save_to_file(string, FILEPATH, username=USERNAME, url=URL)
         exit(0)
 
-    print(f'{bcolors.TEXT}{art}Your password is:\n\n{bcolors.PASS}{string}\n\n{bcolors.TEXT}Good luck!')
+    print(f'{bcolors.HEADER}{art}{bcolors.TEXT}Your password is:\n\n{bcolors.PASS}{string}\n\n{bcolors.TEXT}Good luck!')
     exit(0)
 
 
