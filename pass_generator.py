@@ -54,26 +54,26 @@ def save_to_file(string, filepath, username=None, url=None):
     file = open(filepath, 'w')
     if url is not None:
         if username is not None:
-            file.write(f'-------CREDENTIALS-------'
+            file.write(f'---------------------CREDENTIALS---------------------\n'
                        f'URL:\t\t{url}\n'
                        f'Username:\t{username}\n'
-                       f'Password:\t{string}'
-                       f'-------------------------')
+                       f'Password:\t{string}\n'
+                       f'-----------------------------------------------------\n')
         else:
-            file.write(f'-------CREDENTIALS-------'
+            file.write(f'---------------------CREDENTIALS---------------------\n'
                        f'URL:\t\t{url}\n'
-                       f'Password:\t{string}'
-                       f'-------------------------')
+                       f'Password:\t{string}\n'
+                       f'-----------------------------------------------------\n')
     else:
         if username is not None:
-            file.write(f'-------CREDENTIALS-------'
+            file.write(f'---------------------CREDENTIALS---------------------\n'
                        f'Username:\t{username}\n'
-                       f'Password:\t{string}'
-                       f'-------------------------')
+                       f'Password:\t{string}\n'
+                       f'-----------------------------------------------------\n')
         else:
-            file.write(f'-------CREDENTIALS-------'
-                       f'Password:\t{string}'
-                       f'-------------------------')
+            file.write(f'---------------------CREDENTIALS---------------------\n'
+                       f'Password:\t{string}\n'
+                       f'-----------------------------------------------------\n')
     file.write(string)
     file.close()
 
