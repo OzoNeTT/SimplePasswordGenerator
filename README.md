@@ -1,6 +1,6 @@
 # Simple Password Generator
 
-```shell script
+```
                 /|  /|  ---------------------------
                 ||__||  |                         |
                /   O O\__     Simple password     |
