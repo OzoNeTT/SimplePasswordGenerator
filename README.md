@@ -45,6 +45,8 @@ Password:   0hMyG0d_tH1s_1s_pA55wd
 
 - Encode password to Base64
 
+- Encode password to MD5
+
 ##
 
 > P.S.: There some errors and bugs that will be fixed as soon as possible!

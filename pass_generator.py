@@ -1,4 +1,4 @@
-# !/usr/bin/python3
+# !/usr/bin/env python3
 #
 # This script will generate for you a cool password
 # Author: OzoNeTT
@@ -6,7 +6,7 @@
 
 import string as chars
 import random
-import base64
+import base64, hashlib
 from optparse import OptionParser
 
 LETTERS = chars.ascii_letters
@@ -65,16 +65,28 @@ def password_generator(length=16, digits=True, letters=True, symbols=True, upper
     return random_password
 
 
-def save_to_file(string, filepath, username='', url=''):
+def save_to_file(string, filepath, username='', url='', b64_string='', md5_string=''):
     file = open(filepath, 'w')
     STRING = f'---------------------CREDENTIALS---------------------\n'
     STRING += f'URL:\t\t{url}\n' if url != '' else ''
     STRING += f'Username:\t{username}\n' if username != '' else ''
     STRING += f'Password:\t{string}\n'
+    STRING += f'Base64:\t{b64_string}\n' if b64_string != '' else ''
+    STRING += f'MD5:\t\t{md5_string}\n' if md5_string != '' else ''
     STRING += f'-----------------------------------------------------\n'
 
     file.write(STRING)
     file.close()
+
+
+def printer(string, b64_string='', md5_string=''):
+    outstring = f'{bcolors.HEADER}{art}{bcolors.TEXT}'
+    outstring += f'Program finished successful, result:'
+    outstring += f'\n\n{bcolors.PASS}Password: {string}'
+    outstring += f'\nIn Base64: {b64_string}' if b64_string != '' else ''
+    outstring += f'\nIn MD5: {md5_string}' if md5_string != '' else ''
+    outstring += f'\n\n{bcolors.TEXT}Good luck!'
+    return outstring
 
 
 class bcolors:
@@ -136,7 +148,8 @@ def main_core():
                      help="Specify the username (optional for file output)")
     parse.add_option("-o", "--out", dest="File", type="string",
                      help="Output file. If it exists it will be overwrited!")
-    parse.add_option("-b", "--base64", dest="B", action='store_false', help="Convert everything to base64")
+    parse.add_option("--base64", dest="BASE64", action='store_true', help="Encrypt your password with base64")
+    parse.add_option("--md5", dest="MD5", action='store_true', help="Encrypt your password with MD5")
     parse.add_option("-s", dest="S", action='store_false', help="Do not use punctuation symbols")
     parse.add_option("-c", dest="C", action='store_false', help="Do not use letters")
     parse.add_option("-d", dest="D", action='store_false', help="Do not use digits")
@@ -147,11 +160,10 @@ def main_core():
     (opt, args) = parse.parse_args()
 
     if opt.Length is None and opt.URL is None and opt.Username is None and opt.File is None and opt.Upper is None \
-            and opt.B is None and opt.S is None and opt.C is None and opt.D is None \
-            and opt.Lower is None and opt.LD is None:
+            and opt.BASE64 is None and opt.S is None and opt.C is None and opt.D is None \
+            and opt.Lower is None and opt.LD is None and opt.MD5 is None:
         password = password_generator()
-        print(f'{bcolors.HEADER}{art}{bcolors.TEXT}Your password is:\n\n{bcolors.PASS}{password}\n\n'
-              f'{bcolors.TEXT}Good luck!')
+        print(printer(password))
         exit(0)
 
     string = ''
@@ -181,18 +193,24 @@ def main_core():
     string = password_generator(length=LENGTH, digits=DIGITS, letters=LETTER_CHARS, symbols=PUNCTUATION_SYMBOLS,
                                 upper=UPPER_FLAG, lower=LOWER_FLAG, ld=LETTERS_FIRST)
 
-    if opt.B:
-        string = base64.b32encode(string)
+    # Encryption
+    b64_string = ''
+    md5_string = ''
+    if opt.BASE64:
+        b64_string = base64.b64encode(string.encode()).decode()
 
-    # if file will be written into file
+    if opt.MD5:
+        md5_string = hashlib.md5(string.encode()).hexdigest()
+
+    # if password will be written into file
     if opt.File is not None:
         FILEPATH = str(opt.File)
         URL = str(opt.URL) if opt.URL is not None else ''
         USERNAME = str(opt.Username) if opt.Username is not None else ''
-        save_to_file(string, FILEPATH, username=USERNAME, url=URL)
+        save_to_file(string, FILEPATH, username=USERNAME, url=URL, b64_string=b64_string, md5_string=md5_string)
         exit(0)
 
-    print(f'{bcolors.HEADER}{art}{bcolors.TEXT}Your password is:\n\n{bcolors.PASS}{string}\n\n{bcolors.TEXT}Good luck!')
+    print(printer(string, b64_string=b64_string, md5_string=md5_string))
     exit(0)
 
 
