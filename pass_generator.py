@@ -9,73 +9,71 @@ import random
 import base64
 from optparse import OptionParser
 
-
 LETTERS = chars.ascii_letters
 NUMBERS = chars.digits
 PUNCTUATION = chars.punctuation
 
 
-def create_shuffle(digits, letters, symbols, lowercase=0):
+def create_shuffle(digits, letters, symbols, upper, lower):
     string_constant = ''
 
-    # only lowercase WILL COME IN NEXT UPDATE
-    if lowercase == 1:
-        string_constant += NUMBERS if digits else ''
-        string_constant += LETTERS.lower() if letters else ''
-        string_constant += PUNCTUATION if symbols else ''
-    # only uppercase
-    elif lowercase == 2:
-        string_constant += NUMBERS if digits else ''
-        string_constant += LETTERS.upper() if letters else ''
-        string_constant += PUNCTUATION if symbols else ''
-    else:
-        string_constant += NUMBERS if digits else ''
-        string_constant += LETTERS if letters else ''
-        string_constant += PUNCTUATION if symbols else ''
+    string_constant += NUMBERS if digits else ''
+    string_constant += PUNCTUATION if symbols else ''
+    if letters:
+        string_constant += LETTERS if not upper and not lower else LETTERS.lower()\
+                           if lower else LETTERS.upper() if upper else ''
 
     return string_constant
 
 
-def password_generator(length=8, digits=True, letters=True, symbols=True):
-    printable = create_shuffle(digits, letters, symbols)
+def create_shuffle_ld(digits, letters, symbols, upper, lower):
+    string_letters = ''
+    if letters:
+        string_letters = LETTERS if not upper and not lower else LETTERS.lower()\
+                         if lower else LETTERS.upper() if upper else ''
+    string_else = ''
+    string_else += NUMBERS if digits else ''
+    string_else += PUNCTUATION if symbols else ''
+    return string_letters, string_else
 
-    # convert printable from string to list and shuffle
-    printable = list(printable)
-    random.shuffle(printable)
 
-    # generate random password
-    random_password = random.choices(printable, k=length)
+def password_generator(length=16, digits=True, letters=True, symbols=True, upper=False, lower=False, ld=False):
+    random_password = ''
+    if ld:
+        printable_letters, printable_else = create_shuffle_ld(digits, letters, symbols, upper, lower)
+        printable_letters = list(printable_letters)
+        printable_else = list(printable_else)
 
-    # convert generated password to string
-    random_password = ''.join(random_password)
+        random.shuffle(printable_letters)
+        random.shuffle(printable_else)
+
+        random_number = random.randint(1, length)
+        last_number = length - random_number
+        random_password_part_one = random.choices(printable_letters, k=random_number)
+        random_password_part_two = random.choices(printable_else, k=last_number)
+
+        random_password = ''.join(random_password_part_one) + ''.join(random_password_part_two)
+    else:
+        printable = create_shuffle(digits, letters, symbols, upper, lower)
+
+        printable = list(printable)
+        random.shuffle(printable)
+
+        random_password = random.choices(printable, k=length)
+
+        random_password = ''.join(random_password)
     return random_password
 
 
-def save_to_file(string, filepath, username=None, url=None):
+def save_to_file(string, filepath, username='', url=''):
     file = open(filepath, 'w')
-    if url is not None:
-        if username is not None:
-            file.write(f'---------------------CREDENTIALS---------------------\n'
-                       f'URL:\t\t{url}\n'
-                       f'Username:\t{username}\n'
-                       f'Password:\t{string}\n'
-                       f'-----------------------------------------------------\n')
-        else:
-            file.write(f'---------------------CREDENTIALS---------------------\n'
-                       f'URL:\t\t{url}\n'
-                       f'Password:\t{string}\n'
-                       f'-----------------------------------------------------\n')
-    else:
-        if username is not None:
-            file.write(f'---------------------CREDENTIALS---------------------\n'
-                       f'Username:\t{username}\n'
-                       f'Password:\t{string}\n'
-                       f'-----------------------------------------------------\n')
-        else:
-            file.write(f'---------------------CREDENTIALS---------------------\n'
-                       f'Password:\t{string}\n'
-                       f'-----------------------------------------------------\n')
-    file.write(string)
+    STRING = f'---------------------CREDENTIALS---------------------\n'
+    STRING += f'URL:\t\t{url}\n' if url != '' else ''
+    STRING += f'Username:\t{username}\n' if username != '' else ''
+    STRING += f'Password:\t{string}\n'
+    STRING += f'-----------------------------------------------------\n'
+
+    file.write(STRING)
     file.close()
 
 
@@ -132,51 +130,63 @@ Good luck!
 def main_core():
     parse = OptionParser(bcolors.HEADER + art + help_menu + bcolors.ENDC)
 
-    parse.add_option("-l", dest="L", type="string", help="Specify password length")
-    parse.add_option("-u", dest="U", type="string", help="Set the website URL (optional for file output)")
-    parse.add_option("-n", dest="N", type="string", help="Specify the username (optional for file output)")
-    parse.add_option("-o", dest="O", type="string", help="Output file. If it exists it will be overwrited!")
+    parse.add_option("-l", dest="Length", type="string", help="Specify password length")
+    parse.add_option("-u", dest="URL", type="string", help="Set the website URL (optional for file output)")
+    parse.add_option("-n", dest="Username", type="string", help="Specify the username (optional for file output)")
+    parse.add_option("-o", dest="File", type="string", help="Output file. If it exists it will be overwrited!")
     parse.add_option("-b", dest="B", action='store_false', help="Convert everything to base64")
-    parse.add_option("-s", dest="S", action='store_true', help="Do not use punctuation symbols")
-    parse.add_option("-c", dest="C", action='store_true', help="Do not use letters")
-    parse.add_option("-d", dest="D", action='store_true', help="Do not use digits")
+    parse.add_option("-s", dest="S", action='store_false', help="Do not use punctuation symbols")
+    parse.add_option("-c", dest="C", action='store_false', help="Do not use letters")
+    parse.add_option("-d", dest="D", action='store_false', help="Do not use digits")
+    parse.add_option("--uc", dest="Upper", action='store_false', help="Use only upper case letters")
+    parse.add_option("--lc", dest="Lower", action='store_false', help="Use only lower case letters")
+    parse.add_option("--ld", dest="LD", action='store_false', help="Letters first")
 
     (opt, args) = parse.parse_args()
 
-    if opt.L is None and opt.U is None and opt.N is None and opt.O is None and opt.B is None and opt.S is None and \
-            opt.C is None and opt.D is None:
+    if opt.Length is None and opt.URL is None and opt.Username is None and opt.File is None and opt.Upper is None \
+            and opt.B is None and opt.S is None and opt.C is None and opt.D is None \
+            and opt.Lower is None and opt.LD is None:
         password = password_generator()
         print(f'{bcolors.TEXT}{art}Your password is:\n\n{bcolors.PASS}{password}\n\n{bcolors.TEXT}Good luck!')
         exit(0)
 
     string = ''
-    LENGTH = int(opt.L) if opt.L is not None else 16
-    PUNSYMBOLS = not opt.S
-    DIGITS = not opt.D
-    LETT = not opt.C
+    try:
+        LENGTH = int(opt.Length) if opt.Length is not None else 16
+    except Exception:
+        print(f'{bcolors.TEXT}{art}{bcolors.ENDC}Error error, as always! Type  -h  for help')
+        exit(0)
+    PUNCTUATION_SYMBOLS = True if opt.S is None else False
+    DIGITS = True if opt.D is None else False
+    LETTER_CHARS = True if opt.C is None else False
 
-    if not PUNSYMBOLS and not DIGITS and not LETT:
+    if not PUNCTUATION_SYMBOLS and not DIGITS and not LETTER_CHARS:
         print(f'{bcolors.TEXT}{art}Sorry, you disabled everything, here is you password:\n\n'
               f'{bcolors.PASS}DuNkEy!\n\n{bcolors.TEXT}Good luck!')
         exit(0)
 
-    string = password_generator(length=LENGTH, digits=DIGITS, letters=LETT, symbols=PUNSYMBOLS)
+    UPPER_FLAG = False if opt.Upper is None else True
+    LOWER_FLAG = False if opt.Lower is None else True
+    LETTERS_FIRST = False if opt.LD is None else True
+
+    if UPPER_FLAG and LOWER_FLAG:
+        print(f'{bcolors.TEXT}{art}ERROR 418, i am not a teapot!\n\n')
+        exit(0)
+
+    print(LETTERS_FIRST)
+    string = password_generator(length=LENGTH, digits=DIGITS, letters=LETTER_CHARS, symbols=PUNCTUATION_SYMBOLS,
+                                upper=UPPER_FLAG, lower=LOWER_FLAG, ld=LETTERS_FIRST)
 
     if opt.B:
         string = base64.b32encode(string)
 
     # if file will be written into file
-    if opt.O is not None:
-        if opt.U is not None:
-            if opt.N is not None:
-                save_to_file(string, str(opt.O), username=str(opt.N), url=str(opt.U))
-            else:
-                save_to_file(string, str(opt.O), url=str(opt.U))
-        else:
-            if opt.N is not None:
-                save_to_file(string, str(opt.O), username=str(opt.N))
-            else:
-                save_to_file(string, str(opt.O))
+    if opt.File is not None:
+        FILEPATH = str(opt.File)
+        URL = str(opt.URL) if opt.URL is not None else ''
+        USERNAME = str(opt.Username) if opt.Username is not None else ''
+        save_to_file(string, FILEPATH, username=USERNAME, url=URL)
         exit(0)
 
     print(f'{bcolors.TEXT}{art}Your password is:\n\n{bcolors.PASS}{string}\n\n{bcolors.TEXT}Good luck!')
